@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, createElement, type ReactNode, type ElementType } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -32,6 +32,5 @@ export function Reveal({ children, delay = 0, y = 32, className, as = "div", sta
     }, el);
     return () => ctx.revert();
   }, [delay, y, stagger]);
-  const Tag = as as keyof JSX.IntrinsicElements;
-  return <Tag ref={ref as React.RefObject<HTMLDivElement>} className={className}>{children}</Tag>;
+  return createElement(as as ElementType, { ref, className }, children);
 }
