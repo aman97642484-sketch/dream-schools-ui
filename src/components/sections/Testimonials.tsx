@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Reveal } from "../Reveal";
 import { Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { useApiList } from "@/lib/useApi";
 
-const reviews = [
+interface TestimonialDoc { _id?: string; name: string; role?: string; quote: string; }
+
+const fallback: TestimonialDoc[] = [
   { name: "Priya Sharma", role: "Parent · Grade VII", quote: "Dream Public School gave my daughter the confidence to lead her own learning. The teachers truly know each child." },
   { name: "Arjun Verma", role: "Alumnus · Class of 2022", quote: "The faculty pushed us to think, question and grow. I credit my IIT preparation entirely to my school years here." },
   { name: "Sneha Kapoor", role: "Parent · Grade III", quote: "From the front gate to the classroom, every interaction is warm, professional and intentional. We feel deeply at home." },
@@ -10,11 +13,15 @@ const reviews = [
 ];
 
 export function Testimonials() {
+  const { data: reviews } = useApiList<TestimonialDoc>("/testimonials", fallback);
   const [i, setI] = useState(0);
   useEffect(() => {
+    if (reviews.length < 2) return;
     const t = setInterval(() => setI((v) => (v + 1) % reviews.length), 5000);
     return () => clearInterval(t);
-  }, []);
+  }, [reviews.length]);
+
+  if (!reviews.length) return null;
 
   return (
     <section className="py-28 md:py-36">
@@ -29,14 +36,12 @@ export function Testimonials() {
           <div className="relative min-h-[180px]">
             {reviews.map((r, idx) => (
               <div
-                key={idx}
+                key={r._id || idx}
                 className={`transition-all duration-700 ${
                   idx === i ? "opacity-100 translate-y-0 relative" : "opacity-0 translate-y-4 absolute inset-0 pointer-events-none"
                 }`}
               >
-                <p className="font-display text-2xl md:text-3xl text-primary leading-snug max-w-3xl">
-                  "{r.quote}"
-                </p>
+                <p className="font-display text-2xl md:text-3xl text-primary leading-snug max-w-3xl">"{r.quote}"</p>
                 <div className="mt-8 flex items-center gap-4">
                   <div className="h-12 w-12 rounded-full bg-gold-gradient flex items-center justify-center font-display text-gold-foreground">
                     {r.name.charAt(0)}
@@ -53,12 +58,8 @@ export function Testimonials() {
           <div className="mt-10 flex items-center justify-between">
             <div className="flex gap-1.5">
               {reviews.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setI(idx)}
-                  aria-label={`Go to review ${idx + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${idx === i ? "w-8 bg-primary" : "w-3 bg-primary/20"}`}
-                />
+                <button key={idx} onClick={() => setI(idx)} aria-label={`Go to review ${idx + 1}`}
+                  className={`h-1.5 rounded-full transition-all ${idx === i ? "w-8 bg-primary" : "w-3 bg-primary/20"}`} />
               ))}
             </div>
             <div className="flex gap-2">
