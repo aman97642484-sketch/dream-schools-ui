@@ -15,6 +15,7 @@ import { ScrollProgress } from "@/components/ScrollProgress";
 import { BackToTop } from "@/components/BackToTop";
 import { PageLoader } from "@/components/PageLoader";
 import { SmoothScroll } from "@/components/SmoothScroll";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -91,6 +92,7 @@ function RootComponent() {
       </main>
       <Footer />
       <BackToTop />
+      <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
 }

@@ -7,21 +7,20 @@ import sports from "@/assets/sports.jpg";
 import achievement from "@/assets/achievement.jpg";
 import activity from "@/assets/activity.jpg";
 import comp from "@/assets/computer-lab.jpg";
+import { useApiList } from "@/lib/useApi";
 
-const imgs = [
-  { src: campus, h: "tall" },
-  { src: classroom, h: "short" },
-  { src: library, h: "med" },
-  { src: lab, h: "tall" },
-  { src: comp, h: "short" },
-  { src: sports, h: "med" },
-  { src: achievement, h: "tall" },
-  { src: activity, h: "med" },
-];
+interface GalleryDoc { _id?: string; image: string; title?: string; }
 
-const heightMap = { tall: "row-span-2", med: "row-span-1", short: "row-span-1" } as const;
+const fallbackImgs = [campus, classroom, library, lab, comp, sports, achievement, activity];
+const heights = ["row-span-2", "row-span-1", "row-span-1", "row-span-2", "row-span-1", "row-span-1", "row-span-2", "row-span-1"];
 
 export function GallerySection() {
+  const { data: items } = useApiList<GalleryDoc>("/gallery?limit=8",
+    fallbackImgs.map((src) => ({ image: src as unknown as string }))
+  );
+
+  const display = items.length ? items.slice(0, 8) : fallbackImgs.map((src) => ({ image: src as unknown as string }));
+
   return (
     <section className="py-28 md:py-36">
       <div className="container-edge">
@@ -34,9 +33,9 @@ export function GallerySection() {
         </Reveal>
 
         <Reveal stagger className="mt-14 grid grid-cols-2 md:grid-cols-4 auto-rows-[180px] md:auto-rows-[200px] gap-4">
-          {imgs.map((it, i) => (
-            <div key={i} className={`relative overflow-hidden rounded-2xl group ${heightMap[it.h as keyof typeof heightMap]}`}>
-              <img src={it.src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
+          {display.map((it, i) => (
+            <div key={(it as GalleryDoc)._id || i} className={`relative overflow-hidden rounded-2xl group ${heights[i % heights.length]}`}>
+              <img src={it.image} alt={(it as GalleryDoc).title || ""} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-colors" />
             </div>
           ))}

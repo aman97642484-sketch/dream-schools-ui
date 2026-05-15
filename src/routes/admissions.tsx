@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/PageHeader";
 import { Admission } from "@/components/sections/Admission";
+import { InquiryForm } from "@/components/sections/InquiryForm";
 import { FAQ } from "@/components/sections/FAQ";
 import { Contact } from "@/components/sections/Contact";
 
@@ -23,6 +24,7 @@ function AdmissionsPage() {
         subtitle="A simple, transparent process designed around your child. Begin with a campus visit or apply online today."
       />
       <Admission />
+      <InquiryForm />
       <FAQ />
       <Contact />
     </>

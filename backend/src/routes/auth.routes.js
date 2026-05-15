@@ -1,0 +1,9 @@
+import { Router } from "express";
+import { login, me, logout } from "../controllers/auth.controller.js";
+import { protect } from "../middleware/auth.js";
+
+const r = Router();
+r.post("/login", login);
+r.post("/logout", logout);
+r.get("/me", protect, me);
+export default r;
