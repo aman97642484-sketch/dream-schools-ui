@@ -92,6 +92,7 @@ function RootComponent() {
       </main>
       <Footer />
       <BackToTop />
+      <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
 }
