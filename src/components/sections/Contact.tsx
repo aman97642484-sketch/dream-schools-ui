@@ -1,7 +1,34 @@
+import { useState } from "react";
 import { Reveal } from "../Reveal";
-import { Mail, MapPin, Phone, Send } from "lucide-react";
+import { Mail, MapPin, Phone, Send, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { api } from "@/lib/api";
 
 export function Contact() {
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+
+  const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm((f) => ({ ...f, [k]: e.target.value }));
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      toast.error("Please fill in name, email, and message.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data } = await api.post("/contact", form);
+      toast.success(data?.message || "Message sent. We'll respond within one working day.");
+      setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Could not send. Please try again or email us directly.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="py-28 md:py-36 bg-secondary/40">
       <div className="container-edge">
@@ -40,19 +67,20 @@ export function Contact() {
           <Reveal delay={0.1} className="lg:col-span-7 rounded-3xl bg-card p-8 md:p-10 border border-border/60 shadow-soft">
             <h3 className="font-display text-2xl text-primary">Send us a message</h3>
             <p className="text-sm text-muted-foreground mt-1">Our admissions team usually responds within one working day.</p>
-            <form className="mt-8 grid sm:grid-cols-2 gap-5" onSubmit={(e) => e.preventDefault()}>
-              <Field label="Full name" placeholder="Aarav Mehta" />
-              <Field label="Email" type="email" placeholder="you@example.com" />
-              <Field label="Phone" placeholder="+91 ..." />
-              <Field label="Grade applying for" placeholder="e.g. Grade VI" />
+            <form className="mt-8 grid sm:grid-cols-2 gap-5" onSubmit={onSubmit}>
+              <Field label="Full name" placeholder="Aarav Mehta" value={form.name} onChange={update("name")} required />
+              <Field label="Email" type="email" placeholder="you@example.com" value={form.email} onChange={update("email")} required />
+              <Field label="Phone" placeholder="+91 ..." value={form.phone} onChange={update("phone")} />
+              <Field label="Subject" placeholder="Admission inquiry, etc." value={form.subject} onChange={update("subject")} />
               <div className="sm:col-span-2">
                 <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">Message</label>
-                <textarea rows={5} placeholder="Tell us a little about your child and your questions..."
+                <textarea rows={5} value={form.message} onChange={update("message")} required
+                  placeholder="Tell us a little about your child and your questions..."
                   className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
               </div>
               <div className="sm:col-span-2 flex justify-end">
-                <button type="submit" className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:shadow-elegant hover:-translate-y-0.5 transition-all">
-                  Send Message <Send className="h-4 w-4" />
+                <button type="submit" disabled={loading} className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:shadow-elegant hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+                  {loading ? (<><Loader2 className="h-4 w-4 animate-spin" /> Sending…</>) : (<>Send Message <Send className="h-4 w-4" /></>)}
                 </button>
               </div>
             </form>
@@ -63,11 +91,14 @@ export function Contact() {
   );
 }
 
-function Field({ label, type = "text", placeholder }: { label: string; type?: string; placeholder?: string }) {
+function Field({ label, type = "text", placeholder, value, onChange, required }: {
+  label: string; type?: string; placeholder?: string;
+  value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; required?: boolean;
+}) {
   return (
     <div>
       <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">{label}</label>
-      <input type={type} placeholder={placeholder}
+      <input type={type} placeholder={placeholder} value={value} onChange={onChange} required={required}
         className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40" />
     </div>
   );
