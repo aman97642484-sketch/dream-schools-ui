@@ -58,9 +58,9 @@ export function Footer() {
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-gold mb-5">Reach Us</h4>
             <ul className="space-y-4 text-sm text-primary-foreground/80">
-              <li className="flex gap-3"><MapPin className="h-4 w-4 mt-0.5 text-gold shrink-0" /> 24, Education Avenue,<br />Sector 21, New Delhi 110075</li>
-              <li className="flex gap-3"><Phone className="h-4 w-4 mt-0.5 text-gold shrink-0" /> +91 11 4567 8900</li>
-              <li className="flex gap-3"><Mail className="h-4 w-4 mt-0.5 text-gold shrink-0" /> info@dreampublicschool.edu.in</li>
+              <li className="flex gap-3"><MapPin className="h-4 w-4 mt-0.5 text-gold shrink-0" /><span>24, Education Avenue,<br />Sector 21, New Delhi 110075</span></li>
+              <li className="flex gap-3"><Phone className="h-4 w-4 mt-0.5 text-gold shrink-0" /><span>+91 11 4567 8900</span></li>
+              <li className="flex gap-3"><Mail className="h-4 w-4 mt-0.5 text-gold shrink-0" /><span>info@dreampublicschool.edu.in</span></li>
             </ul>
           </div>
         </div>
