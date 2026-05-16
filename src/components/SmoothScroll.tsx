@@ -1,5 +1,9 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
 export function SmoothScroll() {
   useEffect(() => {
@@ -8,14 +12,19 @@ export function SmoothScroll() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
-    let rafId: number;
-    function raf(time: number) {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    }
-    rafId = requestAnimationFrame(raf);
+
+    // Keep ScrollTrigger in sync with Lenis.
+    lenis.on("scroll", ScrollTrigger.update);
+    const tickerCb = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(tickerCb);
+    gsap.ticker.lagSmoothing(0);
+
+    // Refresh once after first paint so triggers measure correct positions.
+    const refreshId = window.setTimeout(() => ScrollTrigger.refresh(), 300);
+
     return () => {
-      cancelAnimationFrame(rafId);
+      window.clearTimeout(refreshId);
+      gsap.ticker.remove(tickerCb);
       lenis.destroy();
     };
   }, []);

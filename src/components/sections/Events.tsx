@@ -5,10 +5,11 @@ import { useApiList } from "@/lib/useApi";
 interface EventDoc { _id?: string; title: string; date: string | Date; location?: string; category?: string; }
 interface NoticeDoc { _id?: string; title: string; body?: string; category?: string; }
 
+// Stable dates (no Date.now()) — avoids SSR/client hydration mismatch.
 const eventsFallback: EventDoc[] = [
-  { title: "Sankalp 2026 — A celebration of student talent.", date: new Date(Date.now() + 7 * 86400000).toISOString(), location: "5:00 PM · Auditorium", category: "Annual Day" },
-  { title: "Parenting in the digital age — by Dr. K. Iyer.", date: new Date(Date.now() + 19 * 86400000).toISOString(), location: "11:00 AM · Hall B", category: "Workshop" },
-  { title: "Inter-house athletic championship begins.", date: new Date(Date.now() + 28 * 86400000).toISOString(), location: "8:00 AM · Sports Ground", category: "Sports" },
+  { title: "Sankalp 2026 — A celebration of student talent.", date: "2026-06-15T17:00:00.000Z", location: "5:00 PM · Auditorium", category: "Annual Day" },
+  { title: "Parenting in the digital age — by Dr. K. Iyer.", date: "2026-06-27T11:00:00.000Z", location: "11:00 AM · Hall B", category: "Workshop" },
+  { title: "Inter-house athletic championship begins.", date: "2026-07-06T08:00:00.000Z", location: "8:00 AM · Sports Ground", category: "Sports" },
 ];
 
 const noticesFallback: NoticeDoc[] = [
@@ -36,8 +37,8 @@ export function Events() {
           <div className="mt-8 space-y-4">
             {events.slice(0, 3).map((e, i) => {
               const d = new Date(e.date);
-              const day = String(d.getDate()).padStart(2, "0");
-              const mon = MONTHS[d.getMonth()];
+              const day = String(d.getUTCDate()).padStart(2, "0");
+              const mon = MONTHS[d.getUTCMonth()];
               return (
                 <Reveal key={e._id || i} delay={i * 0.05}>
                   <a href="#" className="group flex gap-5 rounded-2xl bg-card border border-border/60 p-5 hover:shadow-soft transition-shadow">
