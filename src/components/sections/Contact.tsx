@@ -23,7 +23,9 @@ export function Contact() {
       toast.success(data?.message || "Message sent. We'll respond within one working day.");
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Could not send. Please try again or email us directly.");
+      console.error("[contact] submit failed:", err?.response?.data || err?.message || err);
+      const msg = err?.response?.data?.message || err?.message || "Could not send. Please try again or email us directly.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

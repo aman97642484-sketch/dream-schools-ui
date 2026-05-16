@@ -26,7 +26,9 @@ export function InquiryForm() {
       toast.success(data?.message || "Inquiry received. Our team will contact you shortly.");
       setForm({ studentName: "", parentName: "", email: "", phone: "", grade: "", message: "" });
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Could not submit. Please try again.");
+      console.error("[inquiry] submit failed:", err?.response?.data || err?.message || err);
+      const msg = err?.response?.data?.message || err?.message || "Could not submit. Please try again.";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }

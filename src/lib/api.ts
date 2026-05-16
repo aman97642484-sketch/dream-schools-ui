@@ -1,8 +1,11 @@
 import axios from "axios";
 
+// Default to same-origin TanStack server routes under /api/public so forms work
+// in the Lovable preview without needing the Express backend running.
+// Set VITE_API_URL (e.g. http://localhost:5000/api) to point at the Express backend instead.
 export const API_URL =
   (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_API_URL) ||
-  "http://localhost:5000/api";
+  "/api/public";
 
 export const api = axios.create({
   baseURL: API_URL,
