@@ -15,6 +15,7 @@ import { Route as AdmissionsRouteImport } from './routes/admissions'
 import { Route as AcademicsRouteImport } from './routes/academics'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicInquiriesRouteImport } from './routes/api/public/inquiries'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
 
 const GalleryRoute = GalleryRouteImport.update({
@@ -47,6 +48,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicInquiriesRoute = ApiPublicInquiriesRouteImport.update({
+  id: '/api/public/inquiries',
+  path: '/api/public/inquiries',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   id: '/api/public/contact',
   path: '/api/public/contact',
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/inquiries': typeof ApiPublicInquiriesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/inquiries': typeof ApiPublicInquiriesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/inquiries': typeof ApiPublicInquiriesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/api/public/contact'
+    | '/api/public/inquiries'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/api/public/contact'
+    | '/api/public/inquiries'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/api/public/contact'
+    | '/api/public/inquiries'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicInquiriesRoute: typeof ApiPublicInquiriesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/inquiries': {
+      id: '/api/public/inquiries'
+      path: '/api/public/inquiries'
+      fullPath: '/api/public/inquiries'
+      preLoaderRoute: typeof ApiPublicInquiriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/contact': {
       id: '/api/public/contact'
       path: '/api/public/contact'
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicInquiriesRoute: ApiPublicInquiriesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
